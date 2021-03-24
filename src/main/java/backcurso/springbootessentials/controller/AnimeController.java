@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -40,7 +41,7 @@ public class AnimeController {
     }
 
     @PostMapping
-    public ResponseEntity<Anime> save(@RequestBody AnimePostDTO anime){
+    public ResponseEntity<Anime> save(@RequestBody @Valid AnimePostDTO anime){
         return new ResponseEntity<>(animeService.save(anime),HttpStatus.CREATED);
     }
 

@@ -25,15 +25,18 @@ public class AnimeService {
         return animeRepository.findById(id).orElseThrow(() -> new BadRequestException("Anime not Found"));
     }
 
+
     public Anime save(AnimePostDTO animePostDTO){
         return animeRepository.save(AnimeMapper.INSTANCE.toAnime(animePostDTO));
     }
+
     public void update(AnimePutDTO animePutDTO) {
         Anime savedAnime = findById(animePutDTO.getId());
         Anime anime = AnimeMapper.INSTANCE.toAnime(animePutDTO);
         anime.setId(savedAnime.getId());
         animeRepository.save(anime);
     }
+
     public void delete(Integer id) {
         animeRepository.delete(findById(id));
     }
