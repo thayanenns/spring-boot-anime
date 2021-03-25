@@ -1,6 +1,7 @@
 package backcurso.springbootessentials.repository;
 
 import backcurso.springbootessentials.domain.Anime;
+import backcurso.springbootessentials.util.AnimeCreator;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,7 +21,7 @@ class AnimeRepositoryTest {
 
     @Test
     public void saveTest(){
-        Anime anime = createAnime();
+        Anime anime = AnimeCreator.createAnimeToBeSaved();
         Anime animeSaved = this.animeRepository.save(anime);
         Assertions.assertThat(animeSaved).isNotNull();
         Assertions.assertThat(animeSaved.getId()).isNotNull();
@@ -29,7 +30,7 @@ class AnimeRepositoryTest {
 
     @Test
     public void saveUpdateTest(){
-        Anime anime = createAnime();
+        Anime anime = AnimeCreator.createAnimeToBeSaved();
         Anime animeSaved = this.animeRepository.save(anime);
         animeSaved.setName("Naruto");
 
@@ -43,7 +44,7 @@ class AnimeRepositoryTest {
 
     @Test
     public void deleteTest(){
-        Anime anime = createAnime();
+        Anime anime = AnimeCreator.createAnimeToBeSaved();
         Anime animeSaved = this.animeRepository.save(anime);
 
         this.animeRepository.delete(animeSaved);
@@ -54,7 +55,7 @@ class AnimeRepositoryTest {
 
     @Test
     public void findByNameTest(){
-        Anime anime = createAnime();
+        Anime anime = AnimeCreator.createAnimeToBeSaved();
         Anime animeSaved = this.animeRepository.save(anime);
         String name = animeSaved.getName();
         List<Anime> animes = this.animeRepository.findByName(name);

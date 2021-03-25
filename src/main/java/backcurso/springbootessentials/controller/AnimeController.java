@@ -28,14 +28,16 @@ import java.util.List;
 public class AnimeController {
     private final AnimeService animeService;
 
+
     @GetMapping
-    public ResponseEntity<List<Anime>> list(){
-        return ResponseEntity.ok(animeService.listAll());
+    public ResponseEntity<Page<Anime>> list(Pageable pageable) {
+        return ResponseEntity.ok(animeService.listAll(pageable));
     }
-//    @GetMapping
-//    public ResponseEntity<Page<Anime>> list(Pageable pageable){
-//        return ResponseEntity.ok(animeService.listAll(pageable));
-//    }
+
+    @GetMapping("/all")
+    public ResponseEntity<List<Anime>> listAll() {
+        return ResponseEntity.ok(animeService.listAllNonPageable());
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity<Anime> findById(@PathVariable Integer id){

@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -19,7 +20,11 @@ public class AnimeService {
 
     private final AnimeRepository animeRepository;
 
-    public List<Anime> listAll(){
+    public Page<Anime> listAll(Pageable pageable) {
+        return animeRepository.findAll(pageable);
+    }
+
+    public List<Anime> listAllNonPageable() {
         return animeRepository.findAll();
     }
 
@@ -27,7 +32,7 @@ public class AnimeService {
         return animeRepository.findById(id).orElseThrow(() -> new BadRequestException("Anime not Found"));
     }
 
-
+    @Transactional
     public Anime save(AnimePostDTO animePostDTO){
         return animeRepository.save(AnimeMapper.INSTANCE.toAnime(animePostDTO));
     }
