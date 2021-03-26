@@ -1,78 +1,61 @@
-package backcurso.springbootessentials.controller;
+package backcurso.springbootessentials.integration;
 
-import backcurso.springbootessentials.DTO.AnimePostDTO;
-import backcurso.springbootessentials.DTO.AnimePutDTO;
 import backcurso.springbootessentials.domain.Anime;
-import backcurso.springbootessentials.service.AnimeService;
+import backcurso.springbootessentials.repository.AnimeRepository;
 import backcurso.springbootessentials.util.AnimeCreator;
 import backcurso.springbootessentials.util.AnimePostDTOCreator;
 import backcurso.springbootessentials.util.AnimePutDTOCreator;
+import backcurso.springbootessentials.wrapper.PageableResponse;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentMatchers;
 import org.mockito.BDDMockito;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.Collections;
 import java.util.List;
 
-@ExtendWith(SpringExtension.class)
-@DisplayName("Tests for Anime Controller")
-public class AnimeControllerTest {
-
-    @InjectMocks
-    public AnimeController animeController;
-
-    @Mock
-    private AnimeService animeServiceMock;
-
-    @BeforeEach
-    void setup() {
-        PageImpl<Anime> animePage = new PageImpl<>(List.of(AnimeCreator.createValidAnime()));
-
-        BDDMockito.when(animeServiceMock.listAll(ArgumentMatchers.any())).thenReturn(animePage);
-
-        BDDMockito.when(animeServiceMock.listAllNonPageable()).thenReturn(List.of(AnimeCreator.createValidAnime()));
-
-        BDDMockito.when(animeServiceMock.findById(ArgumentMatchers.anyInt())).thenReturn(AnimeCreator.createValidAnime());
-
-        BDDMockito.when(animeServiceMock.findByName(ArgumentMatchers.anyString())).thenReturn(List.of(AnimeCreator.createValidAnime()));
-
-        BDDMockito.when(animeServiceMock.save(ArgumentMatchers.any(AnimePostDTO.class))).thenReturn(AnimeCreator.createValidAnime());
-
-        BDDMockito.doNothing().when(animeServiceMock).update(ArgumentMatchers.any(AnimePutDTO.class));
-
-        BDDMockito.doNothing().when(animeServiceMock).delete(ArgumentMatchers.anyInt());
-
-    }
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@AutoConfigureTestDatabase
+public class AnimeControllerIT {
+    @Autowired
+    public TestRestTemplate testRestTemplate;
+    @LocalServerPort
+    private int port;
+    @Autowired
+    private AnimeRepository animeRepository;
 
     @Test
     void listWithPagigationtest() {
-        String expectedName = AnimeCreator.createValidAnime().getName();
-        Page<Anime> animePage = animeController.list(null).getBody();
+        Anime savedAnime = animeRepository.save((AnimeCreator.createAnimeToBeSaved()));
+        String expectedName = savedAnime.getName();
 
+        PageableResponse<Anime> animePage = testRestTemplate.exchange("/api/animes", HttpMethod.GET, null, new ParameterizedTypeReference<PageableResponse<Anime>>(){}).getBody();
 
         Assertions.assertThat(animePage).isNotNull();
         Assertions.assertThat(animePage.toList()).isNotEmpty().hasSize(1);
+
         Assertions.assertThat(animePage.toList().get(0).getName()).isEqualTo(expectedName);
     }
 
     @Test
     void listAlltest() {
         String expectedName = AnimeCreator.createValidAnime().getName();
-        List<Anime> animes = animeController.listAll().getBody();
+        List<Anime> animes =  testRestTemplate.exchange("/api/animes", HttpMethod.GET, null, new ParameterizedTypeReference<PageableResponse<Anime>>(){}).getBody();
 
-        Assertions.assertThat(animes).isNotNull().isNotEmpty().hasSize(1);
-        Assertions.assertThat(animes.get(0).getName()).isEqualTo(expectedName);
+        Assertions.assertThat(animePage).isNotNull();
+        Assertions.assertThat(animePage.toList()).isNotEmpty().hasSize(1);
+
+        Assertions.assertThat(animePage.toList().get(0).getName()).isEqualTo(expectedName);
+    }
     }
 
     @Test
