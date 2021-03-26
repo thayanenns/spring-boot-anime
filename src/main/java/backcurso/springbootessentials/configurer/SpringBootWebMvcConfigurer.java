@@ -17,5 +17,4 @@ public class SpringBootWebMvcConfigurer implements WebMvcConfigurer {
          pageableHandler.setFallbackPageable(PageRequest.of(0, 5));
          resolvers.add(pageableHandler);
     }
-
 }

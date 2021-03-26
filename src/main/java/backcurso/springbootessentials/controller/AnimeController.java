@@ -4,7 +4,9 @@ import backcurso.springbootessentials.DTO.AnimePostDTO;
 import backcurso.springbootessentials.DTO.AnimePutDTO;
 import backcurso.springbootessentials.domain.Anime;
 import backcurso.springbootessentials.service.AnimeService;
+
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -26,19 +28,17 @@ import java.util.List;
 @RequestMapping("/api/animes")
 @RequiredArgsConstructor
 public class AnimeController {
-    private final AnimeService animeService;
 
+    private final AnimeService animeService;
 
     @GetMapping
     public ResponseEntity<Page<Anime>> list(Pageable pageable) {
         return ResponseEntity.ok(animeService.listAll(pageable));
     }
-
     @GetMapping("/all")
     public ResponseEntity<List<Anime>> listAll() {
         return ResponseEntity.ok(animeService.listAllNonPageable());
     }
-
     @GetMapping("/{id}")
     public ResponseEntity<Anime> findById(@PathVariable Integer id){
         return ResponseEntity.ok(animeService.findById(id));
@@ -47,18 +47,15 @@ public class AnimeController {
     public ResponseEntity<List<Anime>> findByName(@RequestParam(required = true) String name){
         return ResponseEntity.ok(animeService.findByName(name));
     }
-
     @PostMapping
     public ResponseEntity<Anime> save(@RequestBody @Valid AnimePostDTO anime){
         return new ResponseEntity<>(animeService.save(anime),HttpStatus.CREATED);
     }
-
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Integer id){
         animeService.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-
     @PutMapping
     public ResponseEntity<Void> update(@RequestBody AnimePutDTO anime){
         animeService.update(anime);

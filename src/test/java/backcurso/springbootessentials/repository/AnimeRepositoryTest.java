@@ -75,7 +75,6 @@ class AnimeRepositoryTest {
         Assertions.assertThatExceptionOfType(ConstraintViolationException.class).isThrownBy(() -> this.animeRepository.save(anime)).withMessageContaining("The anime name cannot be empty");
     }
 
-
     private Anime createAnime(){
         return Anime.builder().name("DBZ").build();
     }

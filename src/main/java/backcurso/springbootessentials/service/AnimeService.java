@@ -6,7 +6,9 @@ import backcurso.springbootessentials.domain.Anime;
 import backcurso.springbootessentials.exception.BadRequestException;
 import backcurso.springbootessentials.mapper.AnimeMapper;
 import backcurso.springbootessentials.repository.AnimeRepository;
+
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
