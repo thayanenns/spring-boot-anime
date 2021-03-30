@@ -48,7 +48,7 @@ public class AnimeServiceTest {
     }
 
     @Test
-    void listAllWithPagigationtest() {
+    void listAllWithPaginationtest() {
         String expectedName = AnimeCreator.createValidAnime().getName();
         Page<Anime> animePage = animeService.listAll(PageRequest.of(1,1));
 
